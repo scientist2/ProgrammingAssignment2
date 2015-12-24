@@ -1,0 +1,63 @@
+## To avoid repeated computation necessary for matrix inversion, 
+##it is beneficial to cache the inverse of the matrix.
+
+
+## The first function will create a "makeCacheMatrix" vector 
+##to "set" the value and to "get" the value of this vector. 
+##It will also "get" as well as "set" the value of the 
+##inverse of the matrix.
+
+
+makeCacheMatrix <- function(x = matrix()) {
+  inv <- NULL
+  set <- function(y) {
+    x <<-y
+    inv <<- NULL
+    }
+get <- function() x
+setinverse <- function(inverse) inv<<-inverse
+getinverse <- function() inv
+list(set = set, get =get,
+     setinverse = setinverse,
+     getinverse = getinverse)
+}
+
+
+## Following function "CacheSolve" is written to 
+##return inverse of the matrix.Firstly, it will check whether 
+##the inverse is computed. If already calculated it will be 
+##retrieved from the cache; if not then it will be computed
+##and the value will be set in the cache through 
+##"setinverse" function.
+
+cacheSolve <- function(x, ...) {
+     inv <- x$getinverse()
+     if(!is.null(inv)){
+       message("getting cached data")
+       return(inv)
+     }
+     data <- x$get()
+     inv <- solve(data,...)
+     x$setinverse(inv)
+     inv
+}
+##Solution after running the my sample data in R:
+
+## x <- rbind(c(10, 12), c(12, 10))
+##> p = makeCacheMatrix(x)
+##> p$get()
+
+##[,1] [,2]
+##[1,]   10   12
+##[2,]   12   10
+
+##> cacheSolve(p)
+##[,1]       [,2]
+##[1,] -0.2272727  0.2727273
+##[2,]  0.2727273 -0.2272727
+Second Run:
+##> cacheSolve(p)
+##getting cached data
+##[,1]       [,2]
+##[1,] -0.2272727  0.2727273
+##[2,]  0.2727273 -0.2272727
